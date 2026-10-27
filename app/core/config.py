@@ -1,5 +1,6 @@
 from functools import lru_cache
 
+from pydantic import AliasChoices, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -7,7 +8,12 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
     supabase_url: str = ""
-    supabase_service_key: str = ""
+    # Accepts the new secret key (sb_secret_...) or the legacy service_role JWT.
+    supabase_service_key: str = Field(
+        default="",
+        validation_alias=AliasChoices("SUPABASE_SECRET_KEY", "SUPABASE_SERVICE_KEY"),
+    )
+    supabase_jwks_url: str = ""
     # Legacy HS256 secret. If empty, tokens are verified with the project's JWKS (asymmetric keys).
     supabase_jwt_secret: str = ""
     jwt_audience: str = "authenticated"
@@ -27,7 +33,7 @@ class Settings(BaseSettings):
 
     @property
     def jwks_url(self) -> str:
-        return f"{self.supabase_url.rstrip('/')}/auth/v1/.well-known/jwks.json"
+        return self.supabase_jwks_url or f"{self.supabase_url.rstrip('/')}/auth/v1/.well-known/jwks.json"
 
 
 @lru_cache
