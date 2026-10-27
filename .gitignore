@@ -1,0 +1,40 @@
+# Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Pytest / Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Environment and secrets
+.env
+*.env.local
+
+# Data / references / temporary datasets
+references/
+dataset/
+*.jpg
+*.jpeg
+*.png
+
+# PyTorch / Torch Hub cache
+.cache/
+checkpoints/
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
