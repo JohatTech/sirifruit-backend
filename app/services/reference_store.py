@@ -32,6 +32,31 @@ class ReferenceStore(Protocol):
     def delete_reference(self, user_id: str, reference_id: str) -> bool: ...
 
 
+class UnconfiguredReferenceStore:
+    """Fallback store when Supabase credentials have not been configured yet."""
+
+    def catalog(self, user_id: str) -> UserCatalog:
+        from fastapi import HTTPException
+        raise HTTPException(
+            503,
+            "El servidor aún no tiene configuradas las variables SUPABASE_URL y SUPABASE_SERVICE_KEY en Render.",
+        )
+
+    def add_reference(self, *args, **kwargs) -> str:
+        from fastapi import HTTPException
+        raise HTTPException(
+            503,
+            "El servidor aún no tiene configuradas las variables SUPABASE_URL y SUPABASE_SERVICE_KEY en Render.",
+        )
+
+    def delete_reference(self, *args, **kwargs) -> bool:
+        from fastapi import HTTPException
+        raise HTTPException(
+            503,
+            "El servidor aún no tiene configuradas las variables SUPABASE_URL y SUPABASE_SERVICE_KEY en Render.",
+        )
+
+
 class InMemoryReferenceStore:
     """Used by tests and offline evaluation."""
 

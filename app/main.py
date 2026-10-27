@@ -21,13 +21,20 @@ async def lifespan(app: FastAPI):
         log.info("Cargando MobileNetV3-Small…")
         app.state.embedder = MobileNetEmbedder(threads=settings.torch_threads)
     if not hasattr(app.state, "store"):
-        from app.services.reference_store import SupabaseReferenceStore
-
         if not settings.supabase_url or not settings.supabase_service_key:
-            raise RuntimeError("Configura SUPABASE_URL y SUPABASE_SERVICE_KEY en las variables de entorno de Render / .env")
-        app.state.store = SupabaseReferenceStore(
-            settings.supabase_url, settings.supabase_service_key, settings.storage_bucket
-        )
+            log.warning(
+                "AVISO: SUPABASE_URL o SUPABASE_SERVICE_KEY no estan configuradas en Render. "
+                "Agrega estas variables en el menu 'Environment' de Render para habilitar la persistencia."
+            )
+            from app.services.reference_store import UnconfiguredReferenceStore
+
+            app.state.store = UnconfiguredReferenceStore()
+        else:
+            from app.services.reference_store import SupabaseReferenceStore
+
+            app.state.store = SupabaseReferenceStore(
+                settings.supabase_url, settings.supabase_service_key, settings.storage_bucket
+            )
     yield
 
 
@@ -46,7 +53,11 @@ def create_app() -> FastAPI:
 
     @app.get("/health", tags=["sistema"])
     def health() -> dict:
-        return {"status": "ok"}
+        settings = get_settings()
+        return {
+            "status": "ok",
+            "supabase_configured": bool(settings.supabase_url and settings.supabase_service_key),
+        }
 
     return app
 
