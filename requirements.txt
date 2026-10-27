@@ -8,3 +8,4 @@ torch>=2.3
 torchvision>=0.18
 supabase>=2.7
 PyJWT[crypto]>=2.9
+gunicorn>=22.0

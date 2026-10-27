@@ -1,0 +1,32 @@
+# Render Blueprint configuration for SiriFruit Backend
+# https://render.com/docs/blueprint-spec
+
+services:
+  - type: web
+    name: sirifruit-backend
+    runtime: python
+    buildCommand: bash ./render-build.sh
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    plan: free
+    region: oregon
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
+      - key: SUPABASE_URL
+        sync: false # Configurar en el Dashboard de Render
+      - key: SUPABASE_SERVICE_KEY
+        sync: false # Configurar en el Dashboard de Render
+      - key: SUPABASE_JWT_SECRET
+        sync: false # Opcional si usas secreto HS256
+      - key: CONF_THRESHOLD
+        value: "0.6"
+      - key: MARGIN_THRESHOLD
+        value: "0.25"
+      - key: CORS_ORIGINS
+        value: "*"
+      - key: TORCH_THREADS
+        value: "2"
+      - key: MAX_UPLOAD_MB
+        value: "5"
