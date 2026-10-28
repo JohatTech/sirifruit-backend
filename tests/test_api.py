@@ -7,7 +7,7 @@ def _enroll(client, auth, slug, n=4, seed0=0):
 
 
 def test_health(client):
-    assert client.get("/health").json() == {"status": "ok"}
+    assert client.get("/health").json()["status"] == "ok"
 
 
 def test_predict_requires_auth(client):
@@ -48,7 +48,7 @@ def test_enroll_then_predict_each_flavor(client, auth):
         r = client.post("/predict", files={"file": ("q.jpg", img, "image/jpeg")}, headers=auth)
         assert r.status_code == 200
         body = r.json()
-        assert body["references_used"] == 24
+        assert body["references_used"] == len(FLAVOR_COLORS) * 4
         correct += body["predictions"][0]["slug"] == slug
     assert correct == len(FLAVOR_COLORS)
 

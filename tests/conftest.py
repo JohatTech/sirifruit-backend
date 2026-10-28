@@ -22,6 +22,7 @@ FLAVOR_COLORS = {
     "maracuya": (30, 140, 245),
     "tamarindo": (40, 80, 120),
     "coco": (225, 235, 240),
+    "arroz_con_pina": (180, 220, 240),
     "choco_galleta": (30, 40, 60),
 }
 FLAVORS = [
